@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Activity, UserPlus, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -56,32 +57,41 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--bg-void)] bg-grid flex items-center justify-center px-4 relative">
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-500/[0.03] rounded-full blur-[100px] pointer-events-none" />
+    <div className="min-h-screen app-shell-bg bg-grid flex items-center justify-center px-4 relative">
+      <div className="genz-orb w-48 h-48 bg-fuchsia-400/30 top-14 left-8 animate-float-soft" />
+      <div className="genz-orb w-48 h-48 bg-cyan-300/35 bottom-12 right-8 animate-float-soft delay-4" />
 
       <div className="w-full max-w-md relative z-10">
-        {/* Logo */}
         <div className="text-center mb-8 animate-fade-up">
           <Link href="/" className="inline-flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
-              <Activity className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--accent-dim)] border border-amber-300/20 flex items-center justify-center">
+              <Activity className="w-5 h-5 text-amber-300" />
             </div>
             <span className="text-xl font-bold text-[var(--text-primary)]">
-              Growth<span className="text-amber-500">Lens</span>
+              Growth<span className="text-amber-300">Lens</span>
             </span>
           </Link>
-          <p className="text-[var(--text-muted)] mt-3 text-sm">
+          <p className="text-[var(--text-muted)] mt-3 text-sm font-mono">
             Create your account to get started
           </p>
         </div>
 
-        <Card className="animate-scale-in delay-1">
+        <div className="mb-4 flex justify-center animate-fade-up delay-1">
+          <Image
+            src="/illustrations/analysis-sticker.svg"
+            alt="Growth sticker"
+            width={360}
+            height={360}
+            className="w-24 h-24 object-contain animate-tilt"
+          />
+        </div>
+
+        <Card className="animate-scale-in delay-1 soft-glow hover-lift">
           <CardContent className="p-6 space-y-6">
-            {/* OAuth */}
             <div className="space-y-3">
               <Button
                 variant="outline"
-                className="w-full"
+                className="w-full hover-lift"
                 onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -94,7 +104,7 @@ export default function SignUpPage() {
               </Button>
               <Button
                 variant="outline"
-                className="w-full"
+                className="w-full hover-lift"
                 onClick={() => signIn("github", { callbackUrl: "/dashboard" })}
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -104,7 +114,6 @@ export default function SignUpPage() {
               </Button>
             </div>
 
-            {/* Divider */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-[var(--border-subtle)]" />
@@ -116,7 +125,6 @@ export default function SignUpPage() {
               </div>
             </div>
 
-            {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
                 type="text"

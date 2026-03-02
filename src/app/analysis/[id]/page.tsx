@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Download, FileText } from "lucide-react";
+import { ArrowLeft, Download, FileText, Share2, Check } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { AnalysisProgress } from "@/components/analysis/AnalysisProgress";
 import { AnalysisResults } from "@/components/analysis/AnalysisResults";
 import { useAnalysisPolling } from "@/hooks/usePolling";
+import { toast } from "@/stores/toast";
 import Link from "next/link";
 
 export default function AnalysisDetailPage() {
@@ -16,6 +17,8 @@ export default function AnalysisDetailPage() {
 
   const [analysis, setAnalysis] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(true);
+  const [shareLoading, setShareLoading] = useState(false);
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
 
   const { status, progress, currentStage, error, isComplete } =
     useAnalysisPolling(id, {
@@ -23,7 +26,7 @@ export default function AnalysisDetailPage() {
     });
 
   // Fetch full analysis data
-  const fetchAnalysis = async () => {
+  const fetchAnalysis = useCallback(async () => {
     try {
       const res = await fetch(`/api/analysis/${id}`);
       const data = await res.json();
@@ -35,18 +38,18 @@ export default function AnalysisDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     fetchAnalysis();
-  }, [id]);
+  }, [fetchAnalysis]);
 
   // Refetch when complete
   useEffect(() => {
     if (isComplete) {
       fetchAnalysis();
     }
-  }, [isComplete]);
+  }, [isComplete, fetchAnalysis]);
 
   if (loading) {
     return (
@@ -78,20 +81,53 @@ export default function AnalysisDetailPage() {
     window.open(`/api/reports/${id}?format=${format}`, "_blank");
   };
 
+  const handleShare = async () => {
+    setShareLoading(true);
+    try {
+      const res = await fetch(`/api/analysis/${id}/share`, { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        const url = data.data.shareUrl;
+        setShareUrl(url);
+        await navigator.clipboard.writeText(url);
+        toast.success("Share link copied to clipboard!");
+      } else {
+        toast.error(data.error || "Failed to generate share link");
+      }
+    } catch {
+      toast.error("Failed to generate share link");
+    } finally {
+      setShareLoading(false);
+    }
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <button
-          onClick={() => router.push("/dashboard")}
-          className="flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
-        >
-          <ArrowLeft size={16} />
-          Back to Dashboard
-        </button>
+    <div className="space-y-6 animate-fade-up">
+      <div className="app-surface p-4 md:p-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="flex items-center gap-1.5 text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+          >
+            <ArrowLeft size={16} />
+            Back to Overview
+          </button>
+          <h1 className="text-heading text-xl md:text-2xl mt-2 text-[var(--text-primary)]">
+            Analysis Workspace
+          </h1>
+        </div>
 
         {isDone && (
           <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleShare}
+              disabled={shareLoading}
+            >
+              {shareUrl ? <Check size={14} /> : <Share2 size={14} />}
+              {shareUrl ? "Copied!" : "Share"}
+            </Button>
             <Button
               variant="outline"
               size="sm"
@@ -142,6 +178,7 @@ export default function AnalysisDetailPage() {
           benchmarkAnalysis={analysis.benchmarkAnalysis as AnalysisResults["benchmarkAnalysis"]}
           recommendations={analysis.recommendations as AnalysisResults["recommendations"]}
           domain={(analysis.domain as string) || ""}
+          url={(analysis.url as string) || ""}
         />
       )}
     </div>

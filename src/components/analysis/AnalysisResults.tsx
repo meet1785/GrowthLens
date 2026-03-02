@@ -3,9 +3,13 @@
 import React from "react";
 import { ScoreRing } from "@/components/ui/ScoreRing";
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { getGradeColor, getSeverityColor } from "@/lib/utils";
+import { getGradeColor } from "@/lib/utils";
+import { downloadPDFReport } from "@/services/pdf-generator";
+import { toast } from "@/stores/toast";
 import type {
+  Analysis,
   UXAnalysis,
   ConversionAnalysis,
   MonetizationAnalysis,
@@ -21,6 +25,8 @@ import {
   DollarSign,
   Target,
   Award,
+  Download,
+  FileText,
 } from "lucide-react";
 
 interface AnalysisResultsProps {
@@ -31,6 +37,7 @@ interface AnalysisResultsProps {
   benchmarkAnalysis?: BenchmarkAnalysis;
   recommendations?: Recommendation[];
   domain: string;
+  url: string;
 }
 
 export function AnalysisResults({
@@ -41,11 +48,64 @@ export function AnalysisResults({
   benchmarkAnalysis,
   recommendations,
   domain,
+  url,
 }: AnalysisResultsProps) {
+  const handleDownloadPDF = () => {
+    try {
+      const analysisData: Analysis = {
+        _id: "",
+        userId: "",
+        url,
+        status: "completed",
+        progress: 100,
+        executiveSummary,
+        uxAnalysis,
+        conversionAnalysis,
+        monetizationAnalysis,
+        benchmarkAnalysis,
+        recommendations,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      downloadPDFReport(analysisData);
+      toast.success("PDF report downloaded");
+    } catch {
+      toast.error("Failed to generate PDF");
+    }
+  };
+
+  const handleDownloadMD = async () => {
+    try {
+      const res = await fetch(`/api/reports/${domain}?format=markdown`);
+      if (!res.ok) throw new Error();
+      const blob = await res.blob();
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `growthlens-${domain}.md`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast.success("Markdown report downloaded");
+    } catch {
+      toast.error("Failed to download markdown report");
+    }
+  };
+
   return (
     <div className="space-y-8 animate-fade-up">
+      {/* Export Actions */}
+      <div className="flex items-center gap-3 justify-end">
+        <Button variant="ghost" size="sm" onClick={handleDownloadMD}>
+          <FileText size={15} />
+          Export .md
+        </Button>
+        <Button variant="primary" size="sm" onClick={handleDownloadPDF}>
+          <Download size={15} />
+          Export PDF
+        </Button>
+      </div>
+
       {/* Score Overview */}
-      <Card className="glow-amber">
+      <Card>
         <CardHeader>
           <CardTitle>Score Overview — <span className="text-amber-500">{domain}</span></CardTitle>
         </CardHeader>

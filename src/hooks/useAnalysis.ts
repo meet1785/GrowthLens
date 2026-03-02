@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { toast } from "@/stores/toast";
 
 interface UseAnalysisReturn {
   startAnalysis: (url: string) => Promise<string | null>;
@@ -26,13 +27,18 @@ export function useStartAnalysis(): UseAnalysisReturn {
       const data = await res.json();
 
       if (!data.success) {
-        setError(data.error || "Failed to start analysis");
+        const errMsg = data.error || "Failed to start analysis";
+        setError(errMsg);
+        toast.error(errMsg);
         return null;
       }
 
+      toast.success("Analysis started — crawling in progress");
       return data.data.id;
-    } catch (err) {
-      setError("Network error. Please try again.");
+    } catch {
+      const errMsg = "Network error. Please try again.";
+      setError(errMsg);
+      toast.error(errMsg);
       return null;
     } finally {
       setIsLoading(false);

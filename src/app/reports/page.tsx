@@ -3,15 +3,17 @@ import { redirect } from "next/navigation";
 import connectDB from "@/lib/mongodb";
 import Analysis from "@/models/Analysis";
 import Link from "next/link";
+import Image from "next/image";
 import {
-  Globe,
   ArrowRight,
   Download,
   FileText,
   CheckCircle2,
+  BarChart3,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { ReportsCompare } from "@/components/reports/ReportsCompare";
 
 export default async function ReportsPage() {
   const session = await auth();
@@ -28,92 +30,156 @@ export default async function ReportsPage() {
     .limit(50)
     .lean();
 
+  const avgUx =
+    completedAnalyses.length > 0
+      ? Math.round(
+          completedAnalyses.reduce(
+            (acc, item) => acc + (item.uxAnalysis?.overallScore ?? 0),
+            0
+          ) / completedAnalyses.length
+        )
+      : null;
+
+  const comparableReports = completedAnalyses.map((analysis) => ({
+    id: analysis._id.toString(),
+    domain: analysis.domain,
+    createdAt: new Date(analysis.createdAt).toISOString(),
+    scores: {
+      ux: analysis.uxAnalysis?.overallScore ?? null,
+      conversion: analysis.conversionAnalysis?.funnelScore ?? null,
+      monetization: analysis.monetizationAnalysis?.monetizationScore ?? null,
+    },
+    grade: analysis.benchmarkAnalysis?.overallGrade ?? null,
+  }));
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 animate-fade-up">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Reports</h1>
-        <p className="text-slate-500 text-sm mt-1">
-          View and export your completed analysis reports
+        <p className="text-xs uppercase tracking-wide text-[var(--text-dim)] font-mono mb-2">
+          Reports
+        </p>
+        <h1 className="text-heading text-2xl md:text-3xl text-[var(--text-primary)]">Decision Reports</h1>
+        <p className="text-[var(--text-muted)] text-sm mt-2">
+          Review completed analyses, compare outcomes, and export findings.
         </p>
       </div>
+
+      <section className="app-surface-strong p-4 md:p-5">
+        <div className="rounded-[var(--radius-sm)] overflow-hidden border border-[var(--border-subtle)] mb-4">
+          <Image
+            src="/illustrations/reports-wave.svg"
+            alt="Trend wave chart illustration"
+            width={720}
+            height={260}
+            className="w-full h-32 object-cover animate-float-soft"
+          />
+        </div>
+        <div className="metric-strip">
+          <div className="metric-block hover-lift">
+            <p className="text-xs text-[var(--text-dim)] uppercase tracking-wide font-mono">Completed</p>
+            <p className="text-2xl font-semibold text-[var(--text-primary)] mt-2">{completedAnalyses.length}</p>
+          </div>
+          <div className="metric-block hover-lift">
+            <p className="text-xs text-[var(--text-dim)] uppercase tracking-wide font-mono">Average UX</p>
+            <p className="text-2xl font-semibold text-[var(--text-primary)] mt-2">{avgUx ?? "—"}</p>
+          </div>
+          <div className="metric-block hover-lift">
+            <p className="text-xs text-[var(--text-dim)] uppercase tracking-wide font-mono">Top Grade</p>
+            <p className="text-2xl font-semibold text-[var(--text-primary)] mt-2">
+              {completedAnalyses[0]?.benchmarkAnalysis?.overallGrade ?? "—"}
+            </p>
+          </div>
+          <div className="metric-block hover-lift">
+            <p className="text-xs text-[var(--text-dim)] uppercase tracking-wide font-mono">Compare</p>
+            <p className="text-sm font-medium text-[var(--text-primary)] mt-2">{completedAnalyses.length >= 2 ? "Ready" : "Need 2 reports"}</p>
+          </div>
+        </div>
+      </section>
 
       {completedAnalyses.length === 0 ? (
         <Card>
           <CardContent className="py-16 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-4">
-              <FileText className="w-8 h-8 text-slate-400" />
+            <div className="w-14 h-14 rounded-[var(--radius-sm)] bg-[var(--bg-elevated)] border border-[var(--border-subtle)] flex items-center justify-center mx-auto mb-4">
+              <FileText className="w-7 h-7 text-[var(--text-muted)]" />
             </div>
-            <h3 className="text-lg font-semibold text-slate-900 mb-2">
+            <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">
               No reports yet
             </h3>
-            <p className="text-slate-500 text-sm mb-6">
+            <p className="text-[var(--text-muted)] text-sm mb-6">
               Complete your first analysis to generate a report.
             </p>
             <Link
               href="/analysis/new"
-              className="inline-flex items-center gap-2 bg-blue-600 text-white font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
+              className="inline-flex items-center gap-2 bg-[var(--accent)] text-[#191105] font-medium px-4 py-2 rounded-[var(--radius-sm)] hover:bg-[var(--accent-light)] transition-colors text-sm"
             >
               Start Analysis
             </Link>
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <CardHeader>
-            <CardTitle>Completed Analyses</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="divide-y divide-slate-100">
-              {completedAnalyses.map((analysis) => {
-                const id = analysis._id.toString();
-                return (
-                  <div
-                    key={id}
-                    className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors"
-                  >
-                    <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center shrink-0">
-                      <CheckCircle2 size={18} className="text-green-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-slate-900">
-                        {analysis.domain}
-                      </p>
-                      <p className="text-xs text-slate-500 mt-0.5">
-                        {new Date(analysis.createdAt).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </p>
-                    </div>
+        <>
+          <ReportsCompare reports={comparableReports} />
 
-                    {analysis.benchmarkAnalysis?.overallGrade && (
-                      <Badge variant="info" size="sm">
-                        Grade: {analysis.benchmarkAnalysis.overallGrade}
-                      </Badge>
-                    )}
+          <Card className="hover-lift">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 size={18} className="text-amber-300" />
+                Completed Analyses
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y divide-[var(--border-subtle)]">
+                {completedAnalyses.map((analysis) => {
+                  const id = analysis._id.toString();
+                  return (
+                    <div
+                      key={id}
+                      className="flex items-center gap-4 px-5 py-4 hover:bg-white/[0.02] hover:translate-x-0.5 transition-all"
+                    >
+                      <div className="w-10 h-10 rounded-[var(--radius-sm)] bg-emerald-500/10 border border-emerald-300/20 flex items-center justify-center shrink-0">
+                        <CheckCircle2 size={18} className="text-emerald-400" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-[var(--text-primary)]">
+                          {analysis.domain}
+                        </p>
+                        <p className="text-xs text-[var(--text-dim)] mt-0.5 font-mono">
+                          {new Date(analysis.createdAt).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </p>
+                      </div>
 
-                    <div className="flex items-center gap-2 shrink-0">
-                      <Link
-                        href={`/analysis/${id}`}
-                        className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
-                      >
-                        View <ArrowRight size={14} />
-                      </Link>
-                      <a
-                        href={`/api/reports/${id}?format=markdown`}
-                        className="text-sm text-slate-500 hover:text-slate-700 flex items-center gap-1"
-                        download
-                      >
-                        <Download size={14} />
-                      </a>
+                      {analysis.benchmarkAnalysis?.overallGrade && (
+                        <Badge variant="info" size="sm">
+                          Grade: {analysis.benchmarkAnalysis.overallGrade}
+                        </Badge>
+                      )}
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Link
+                          href={`/analysis/${id}`}
+                          className="text-sm text-[var(--info)] hover:text-blue-300 font-medium flex items-center gap-1"
+                        >
+                          View <ArrowRight size={14} />
+                        </Link>
+                        <a
+                          href={`/api/reports/${id}?format=markdown`}
+                          className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] flex items-center gap-1"
+                          download
+                        >
+                          <Download size={14} />
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        </>
       )}
     </div>
   );

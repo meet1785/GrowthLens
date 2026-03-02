@@ -9,7 +9,7 @@ export function Card({ className, children, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        "rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] shadow-lg shadow-black/20",
+        "app-surface rounded-[var(--radius-md)]",
         className
       )}
       {...props}
@@ -22,7 +22,7 @@ export function Card({ className, children, ...props }: CardProps) {
 export function CardHeader({ className, children, ...props }: CardProps) {
   return (
     <div
-      className={cn("px-6 py-4 border-b border-[var(--border-subtle)]", className)}
+      className={cn("px-5 py-4 border-b border-[var(--border-subtle)]", className)}
       {...props}
     >
       {children}
@@ -37,7 +37,7 @@ export function CardTitle({
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={cn("text-lg font-semibold text-[var(--text-primary)]", className)}
+      className={cn("text-base md:text-lg font-semibold text-[var(--text-primary)]", className)}
       {...props}
     >
       {children}
@@ -52,7 +52,7 @@ export function CardDescription({
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
     <p
-      className={cn("text-sm text-[var(--text-muted)] mt-1", className)}
+      className={cn("text-sm text-[var(--text-muted)] mt-1.5", className)}
       {...props}
     >
       {children}
@@ -62,7 +62,7 @@ export function CardDescription({
 
 export function CardContent({ className, children, ...props }: CardProps) {
   return (
-    <div className={cn("px-6 py-4", className)} {...props}>
+    <div className={cn("px-5 py-4", className)} {...props}>
       {children}
     </div>
   );
@@ -72,7 +72,7 @@ export function CardFooter({ className, children, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        "px-6 py-4 border-t border-[var(--border-subtle)] flex items-center",
+        "px-5 py-4 border-t border-[var(--border-subtle)] flex items-center",
         className
       )}
       {...props}

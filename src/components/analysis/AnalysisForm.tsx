@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Globe, ArrowRight, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -24,18 +25,29 @@ export function AnalysisForm() {
   };
 
   return (
-    <Card className="max-w-2xl mx-auto glow-amber animate-scale-in">
-      <CardContent className="p-8">
-        <div className="text-center mb-6">
-          <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-4">
-            <Globe className="w-7 h-7 text-amber-500" />
+    <Card className="max-w-2xl mx-auto animate-scale-in hover-lift soft-glow">
+      <CardContent className="p-5 md:p-6">
+        <div className="mb-6">
+          <div className="w-12 h-12 rounded-[var(--radius-sm)] bg-[var(--accent-dim)] border border-amber-300/20 flex items-center justify-center mb-4 pulse-ring">
+            <Globe className="w-6 h-6 text-amber-300" />
           </div>
-          <h2 className="text-xl font-semibold text-[var(--text-primary)]">
-            Analyze a Product
+          <div className="rounded-[var(--radius-sm)] overflow-hidden border border-[var(--border-subtle)] mb-4">
+            <Image
+              src="/illustrations/analysis-sticker.svg"
+              alt="Analysis sticker"
+              width={360}
+              height={360}
+              className="w-full h-28 object-contain bg-[var(--bg-elevated)] animate-float-soft"
+            />
+          </div>
+          <p className="text-xs uppercase tracking-wide text-[var(--text-dim)] font-mono mb-2">
+            New Mission
+          </p>
+          <h2 className="text-xl md:text-2xl text-heading text-[var(--text-primary)]">
+            Run a growth audit
           </h2>
-          <p className="text-[var(--text-muted)] mt-1.5 text-sm">
-            Enter a website URL to get a comprehensive growth analysis powered by
-            AI
+          <p className="text-[var(--text-muted)] mt-2 text-sm">
+            Submit one product URL and we’ll return prioritized UX, conversion, and monetization fixes.
           </p>
         </div>
 
@@ -63,16 +75,15 @@ export function AnalysisForm() {
             className="w-full"
             loading={isLoading}
           >
-            {isLoading ? "Starting Analysis..." : "Analyze Website"}
+            {isLoading ? "Starting Analysis..." : "Start Analysis"}
             {!isLoading && <ArrowRight size={18} />}
           </Button>
         </form>
 
-        <div className="mt-6 pt-6 border-t border-[var(--border-subtle)]">
-          <p className="text-xs text-[var(--text-dim)] text-center font-mono">
-            Analysis typically takes 30–90 seconds. We&apos;ll crawl key pages and
-            run AI analysis across UX, conversion, monetization, and benchmarks.
-          </p>
+        <div className="mt-6 pt-5 border-t border-[var(--border-subtle)] grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs text-[var(--text-muted)]">
+          <p className="app-surface px-3 py-2 rounded-[var(--radius-sm)] hover-lift">1. Crawl key pages</p>
+          <p className="app-surface px-3 py-2 rounded-[var(--radius-sm)] hover-lift">2. Score core growth surfaces</p>
+          <p className="app-surface px-3 py-2 rounded-[var(--radius-sm)] hover-lift">3. Generate ranked fixes</p>
         </div>
       </CardContent>
     </Card>

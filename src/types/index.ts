@@ -31,6 +31,7 @@ export interface Analysis {
   benchmarkAnalysis?: BenchmarkAnalysis;
   recommendations?: Recommendation[];
   executiveSummary?: string;
+  shareToken?: string;
   error?: string;
   createdAt: Date;
   updatedAt: Date;

@@ -61,8 +61,7 @@ export async function GET(
 
         if (
           initial.status === "completed" ||
-          initial.status === "failed" ||
-          initial.status === "cancelled"
+          initial.status === "failed"
         ) {
           send("done", initial);
           closed = true;
@@ -85,8 +84,7 @@ export async function GET(
 
             if (
               current.status === "completed" ||
-              current.status === "failed" ||
-              current.status === "cancelled"
+              current.status === "failed"
             ) {
               send("done", current);
               closed = true;

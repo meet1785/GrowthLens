@@ -23,6 +23,7 @@ export interface IAnalysis extends Document {
   benchmarkAnalysis?: BenchmarkAnalysis;
   recommendations?: Recommendation[];
   executiveSummary?: string;
+  shareToken?: string;
   error?: string;
   duration?: number; // Total analysis time in ms
   createdAt: Date;
@@ -125,6 +126,12 @@ const AnalysisSchema = new Schema<IAnalysis>(
     duration: {
       type: Number,
       default: null,
+    },
+    shareToken: {
+      type: String,
+      default: null,
+      index: true,
+      sparse: true,
     },
   },
   {

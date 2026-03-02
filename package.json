@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:seed": "node scripts/seed.mjs",
+    "test:smoke": "node scripts/test-flow.mjs"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.1",

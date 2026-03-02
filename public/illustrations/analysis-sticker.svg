@@ -1,0 +1,11 @@
+<svg width="360" height="360" viewBox="0 0 360 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="360" height="360" rx="40" fill="#10192C"/>
+  <circle cx="180" cy="180" r="128" stroke="#334155" stroke-width="2" stroke-dasharray="9 9"/>
+  <circle cx="180" cy="180" r="88" fill="#17243C" stroke="#475569"/>
+  <circle cx="180" cy="180" r="42" fill="#0B1224" stroke="#F2B24B"/>
+  <path d="M180 110L196 150L238 154L206 182L216 224L180 202L144 224L154 182L122 154L164 150L180 110Z" fill="#F2B24B"/>
+  <rect x="88" y="56" width="76" height="32" rx="16" fill="#60A5FA" fill-opacity="0.2"/>
+  <text x="102" y="77" fill="#93C5FD" font-size="12" font-family="'IBM Plex Mono', monospace">+12%</text>
+  <rect x="206" y="266" width="82" height="32" rx="16" fill="#34D399" fill-opacity="0.2"/>
+  <text x="220" y="287" fill="#6EE7B7" font-size="12" font-family="'IBM Plex Mono', monospace">impact</text>
+</svg>

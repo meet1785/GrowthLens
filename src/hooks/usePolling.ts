@@ -51,13 +51,15 @@ export function useAnalysisPolling(
   useEffect(() => {
     if (!analysisId || !enabled) return;
 
-    // Initial check
-    checkStatus();
+    const initialPoll = setTimeout(() => {
+      void checkStatus();
+    }, 0);
 
     // Start polling
     intervalRef.current = setInterval(checkStatus, interval);
 
     return () => {
+      clearTimeout(initialPoll);
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;

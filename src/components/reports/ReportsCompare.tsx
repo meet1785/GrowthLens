@@ -53,7 +53,7 @@ export function ReportsCompare({ reports }: ReportsCompareProps) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <ArrowLeftRight size={18} className="text-amber-500" />
+          <ArrowLeftRight size={18} className="text-amber-300" />
           Compare Reports
         </CardTitle>
       </CardHeader>
@@ -62,7 +62,7 @@ export function ReportsCompare({ reports }: ReportsCompareProps) {
           <select
             value={leftId}
             onChange={(event) => setLeftId(event.target.value)}
-            className="h-10 px-3 rounded-xl bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-sm text-[var(--text-primary)]"
+            className="h-11 px-3 rounded-[var(--radius-sm)] bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-sm text-[var(--text-primary)]"
           >
             {reports.map((report) => (
               <option key={report.id} value={report.id}>
@@ -74,7 +74,7 @@ export function ReportsCompare({ reports }: ReportsCompareProps) {
           <select
             value={rightId}
             onChange={(event) => setRightId(event.target.value)}
-            className="h-10 px-3 rounded-xl bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-sm text-[var(--text-primary)]"
+            className="h-11 px-3 rounded-[var(--radius-sm)] bg-[var(--bg-elevated)] border border-[var(--border-subtle)] text-sm text-[var(--text-primary)]"
           >
             {reports.map((report) => (
               <option key={report.id} value={report.id}>
@@ -86,7 +86,7 @@ export function ReportsCompare({ reports }: ReportsCompareProps) {
 
         {left && right && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)]">
+            <div className="p-4 rounded-[var(--radius-sm)] border border-[var(--border-subtle)] bg-[var(--bg-elevated)]">
               <p className="text-sm font-semibold text-[var(--text-primary)] mb-1">{left.domain}</p>
               <p className="text-xs text-[var(--text-dim)] font-mono mb-3">
                 {new Date(left.createdAt).toLocaleDateString("en-US")}
@@ -99,7 +99,7 @@ export function ReportsCompare({ reports }: ReportsCompareProps) {
               </div>
             </div>
 
-            <div className="p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)]">
+            <div className="p-4 rounded-[var(--radius-sm)] border border-[var(--border-subtle)] bg-[var(--bg-elevated)]">
               <p className="text-sm font-semibold text-[var(--text-primary)] mb-1">{right.domain}</p>
               <p className="text-xs text-[var(--text-dim)] font-mono mb-3">
                 {new Date(right.createdAt).toLocaleDateString("en-US")}
@@ -115,7 +115,7 @@ export function ReportsCompare({ reports }: ReportsCompareProps) {
         )}
 
         {left && right && (
-          <div className="p-4 rounded-xl border border-[var(--border-subtle)]">
+          <div className="p-4 rounded-[var(--radius-sm)] border border-[var(--border-subtle)] bg-[var(--bg-elevated)]/50">
             <p className="text-sm font-semibold text-[var(--text-primary)] mb-3">Delta (Right - Left)</p>
             <div className="flex flex-wrap gap-3 text-sm">
               <span className="inline-flex items-center gap-2">

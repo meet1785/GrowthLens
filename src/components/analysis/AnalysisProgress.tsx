@@ -37,32 +37,33 @@ export function AnalysisProgress({
   const isFailed = status === "failed";
 
   return (
-    <Card className="max-w-2xl mx-auto animate-scale-in">
-      <CardContent className="p-8">
-        <div className="text-center mb-6">
+    <Card className="max-w-3xl mx-auto animate-scale-in">
+      <CardContent className="p-5 md:p-6">
+        <div className="mb-6">
+          <p className="text-xs uppercase tracking-wide text-[var(--text-dim)] font-mono mb-2">Mission Status</p>
           {isRunning && (
-            <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 rounded-[var(--radius-sm)] bg-[var(--accent-dim)] border border-amber-300/20 flex items-center justify-center mb-4">
               <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
             </div>
           )}
           {isComplete && (
-            <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 rounded-[var(--radius-sm)] bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
               <CheckCircle2 className="w-8 h-8 text-emerald-400" />
             </div>
           )}
           {isFailed && (
-            <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 rounded-[var(--radius-sm)] bg-red-500/10 border border-red-500/20 flex items-center justify-center mb-4">
               <XCircle className="w-8 h-8 text-red-400" />
             </div>
           )}
 
-          <h2 className="text-xl font-semibold text-[var(--text-primary)]">
+          <h2 className="text-xl md:text-2xl text-heading text-[var(--text-primary)]">
             {isRunning && "Analyzing..."}
             {isComplete && "Analysis Complete!"}
             {isFailed && "Analysis Failed"}
           </h2>
 
-          <div className="flex items-center justify-center gap-1.5 mt-2 text-sm text-[var(--text-muted)] font-mono">
+          <div className="flex items-center gap-1.5 mt-2 text-sm text-[var(--text-muted)] font-mono">
             <Globe size={14} />
             <span>{url}</span>
           </div>
@@ -76,7 +77,7 @@ export function AnalysisProgress({
               className="mb-4"
             />
             {currentStage && (
-              <div className="text-center text-sm text-[var(--text-secondary)] font-mono">
+              <div className="text-sm text-[var(--text-secondary)] font-mono">
                 {stageLabels[currentStage] ?? `○ ${currentStage}`}
               </div>
             )}
